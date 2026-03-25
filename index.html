@@ -84,7 +84,15 @@
       100% { transform: translateY(0px);   opacity: 0.8; }
     }
 
-    /* scroll reveal base */
+    /* Mobile-specific animations */
+    @keyframes mobileFloat {
+      0%,100% { transform: translateY(0px) scale(1); }
+      50%      { transform: translateY(-14px) scale(1.02); }
+    }
+    @keyframes mobileGlow {
+      0%,100% { box-shadow: 0 0 25px rgba(46,196,182,0.6), 0 0 50px rgba(46,196,182,0.25); }
+      50%      { box-shadow: 0 0 50px rgba(46,196,182,1), 0 0 100px rgba(46,196,182,0.5), 0 0 20px rgba(46,196,182,0.3); }
+    }
     .reveal { opacity:0; transform:translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
     .reveal-left { opacity:0; transform:translateX(-28px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -302,9 +310,10 @@
       .hero-text .bio { margin:14px auto 0; max-width:100%; }
       .hero-btns { justify-content:center; gap:10px; width:100%; }
       .btn-primary, .btn-outline { padding:11px 18px; font-size:0.85rem; flex:1; text-align:center; max-width:160px; }
-      .hero-img { width:100%; max-width:280px; height:300px; margin:0 auto; animation: rotate3d 7s ease-in-out infinite, glowPulse 7s ease-in-out infinite, holoFlicker 8s ease-in-out infinite; }
+      .hero-img { width:100%; max-width:280px; height:300px; margin:0 auto; animation: mobileFloat 3.5s ease-in-out infinite, mobileGlow 3.5s ease-in-out infinite, holoFlicker 8s ease-in-out infinite; }
       .hero-img-wrapper { width:100%; max-width:280px; height:300px; margin:0 auto; }
-      .hero-img-wrapper::before, .hero-img-wrapper::after { display:none; }
+      .hero-img-wrapper::before { display:block; inset:-14px; animation: ringRotate 8s linear infinite; }
+      .hero-img-wrapper::after  { display:block; inset:-28px; animation: ringRotateReverse 12s linear infinite; }
       .orbit-dot { display: none; }
       .badge { display:none; }
 
@@ -335,7 +344,7 @@
       .hero-text h1 { font-size:2rem; }
       .hero-text .role { font-size:0.95rem; }
       .hero-text .bio { font-size:0.88rem; }
-      .hero-img { max-width:240px; height:270px; animation: rotate3d 7s ease-in-out infinite, glowPulse 7s ease-in-out infinite, holoFlicker 8s ease-in-out infinite; }
+      .hero-img { max-width:240px; height:270px; animation: mobileFloat 3.5s ease-in-out infinite, mobileGlow 3.5s ease-in-out infinite, holoFlicker 8s ease-in-out infinite; }
       .hero-img-wrapper { max-width:240px; height:270px; }
 
       .services-grid { grid-template-columns:1fr; }
