@@ -32,6 +32,10 @@
     @keyframes pulse    { 0%,100% { box-shadow:0 0 0 0 rgba(46,196,182,0.4); } 70% { box-shadow:0 0 0 10px rgba(46,196,182,0); } }
     @keyframes shimmer  { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
     @keyframes countUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes rotate3d { 0%,100% { transform: perspective(800px) rotateY(-8deg) rotateX(4deg) translateY(0px); } 50% { transform: perspective(800px) rotateY(8deg) rotateX(-4deg) translateY(-12px); } }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 20px 60px rgba(46,196,182,0.35), 0 0 0 0 rgba(46,196,182,0.2); } 50% { box-shadow: 0 30px 80px rgba(46,196,182,0.55), 0 0 40px 10px rgba(46,196,182,0.15); } }
+    @keyframes ringRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes ringRotateReverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
 
     /* scroll reveal base */
     .reveal { opacity:0; transform:translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -97,13 +101,60 @@
     .btn-outline { padding:13px 30px; background:transparent; color:var(--navy); border:2px solid var(--navy); border-radius:6px; font-family:'Inter',sans-serif; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none; transition:background 0.2s, transform 0.2s; }
     .btn-outline:hover { background:rgba(30,42,94,0.08); transform:translateY(-3px); }
 
-    /* hero image */
-    .hero-img { flex-shrink:0; width:340px; height:420px; border-radius:20px; overflow:hidden; position:relative; background:linear-gradient(160deg,#b8ede9 0%,#2ec4b6 60%,#1a9e93 100%); box-shadow:0 20px 60px rgba(46,196,182,0.25); animation: slideLeft 0.8s 0.3s ease both; }
-    .hero-img img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; transition:transform 0.5s ease; }
-    .hero-img:hover img { transform:scale(1.04); }
+    /* hero image - 3D */
+    .hero-img-wrapper {
+      flex-shrink: 0;
+      position: relative;
+      width: 340px;
+      height: 420px;
+      animation: slideLeft 0.8s 0.3s ease both;
+    }
+    /* decorative rotating rings */
+    .hero-img-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -18px;
+      border-radius: 28px;
+      border: 2px dashed rgba(46,196,182,0.4);
+      animation: ringRotate 12s linear infinite;
+      z-index: 0;
+    }
+    .hero-img-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: -34px;
+      border-radius: 36px;
+      border: 2px dashed rgba(194,168,74,0.25);
+      animation: ringRotateReverse 18s linear infinite;
+      z-index: 0;
+    }
+    .hero-img {
+      width: 340px;
+      height: 420px;
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(160deg,#b8ede9 0%,#2ec4b6 60%,#1a9e93 100%);
+      animation: rotate3d 6s ease-in-out infinite, glowPulse 6s ease-in-out infinite;
+      transform-style: preserve-3d;
+      z-index: 1;
+      cursor: pointer;
+    }
+    .hero-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .hero-img:hover {
+      animation-play-state: paused;
+    }
+    .hero-img:hover img { transform: scale(1.06); }
 
     /* badges */
-    .badge { position:absolute; background:var(--cream); border-radius:12px; padding:10px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.12); font-size:0.8rem; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px; }
+    .badge { position:absolute; background:var(--cream); border-radius:12px; padding:10px 16px; box-shadow:0 8px 24px rgba(0,0,0,0.12); font-size:0.8rem; font-weight:600; color:var(--navy); display:flex; align-items:center; gap:8px; z-index:2; }
     .badge.b1 { top:24px; left:-20px; animation: badgePop 0.5s 1.2s ease both; }
     .badge.b2 { bottom:60px; right:-20px; animation: badgePop 0.5s 1.5s ease both; }
     .badge .dot { width:8px; height:8px; border-radius:50%; background:var(--teal); animation: pulse 2s infinite; }
@@ -176,7 +227,9 @@
       .hero-text .bio { margin:14px auto 0; max-width:100%; }
       .hero-btns { justify-content:center; gap:10px; width:100%; }
       .btn-primary, .btn-outline { padding:11px 18px; font-size:0.85rem; flex:1; text-align:center; max-width:160px; }
-      .hero-img { width:100%; max-width:280px; height:300px; margin:0 auto; }
+      .hero-img { width:100%; max-width:280px; height:300px; margin:0 auto; animation: glowPulse 6s ease-in-out infinite; }
+      .hero-img-wrapper { width:100%; max-width:280px; height:300px; margin:0 auto; }
+      .hero-img-wrapper::before, .hero-img-wrapper::after { display:none; }
       .badge { display:none; }
 
       #about { padding:60px 16px; width:100%; }
@@ -207,6 +260,7 @@
       .hero-text .role { font-size:0.95rem; }
       .hero-text .bio { font-size:0.88rem; }
       .hero-img { max-width:240px; height:270px; }
+      .hero-img-wrapper { max-width:240px; height:270px; }
 
       .services-grid { grid-template-columns:1fr; }
       .stat-card .num { font-size:1.5rem; }
@@ -240,8 +294,10 @@
           <a href="#contact" class="btn-outline">Contact Me</a>
         </div>
       </div>
-      <div class="hero-img">
-        <img src="img/img.jpg" alt="Neha Mali"/>
+      <div class="hero-img-wrapper">
+        <div class="hero-img">
+          <img src="img/img.jpg" alt="Neha Mali"/>
+        </div>
         <div class="badge b1"><span class="dot"></span> Available for Work</div>
         <div class="badge b2"><span class="dot"></span> Fast Delivery</div>
       </div>
