@@ -32,26 +32,57 @@
     @keyframes pulse    { 0%,100% { box-shadow:0 0 0 0 rgba(46,196,182,0.4); } 70% { box-shadow:0 0 0 10px rgba(46,196,182,0); } }
     @keyframes shimmer  { 0% { background-position:-200% center; } 100% { background-position:200% center; } }
     @keyframes countUp  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-    /* Animation 1 - 3D float tilt */
+    /* AR/VR Animations */
     @keyframes rotate3d {
-      0%   { transform: perspective(900px) rotateY(-12deg) rotateX(6deg)  translateY(0px)   scale(1); }
-      25%  { transform: perspective(900px) rotateY(4deg)  rotateX(-3deg) translateY(-8px)  scale(1.02); }
-      50%  { transform: perspective(900px) rotateY(12deg) rotateX(-6deg) translateY(-16px) scale(1.03); }
-      75%  { transform: perspective(900px) rotateY(-4deg) rotateX(3deg)  translateY(-8px)  scale(1.02); }
-      100% { transform: perspective(900px) rotateY(-12deg) rotateX(6deg)  translateY(0px)   scale(1); }
+      0%   { transform: perspective(1000px) rotateY(-10deg) rotateX(5deg)  translateY(0px); }
+      25%  { transform: perspective(1000px) rotateY(3deg)  rotateX(-2deg) translateY(-10px); }
+      50%  { transform: perspective(1000px) rotateY(10deg) rotateX(-5deg) translateY(-18px); }
+      75%  { transform: perspective(1000px) rotateY(-3deg) rotateX(2deg)  translateY(-10px); }
+      100% { transform: perspective(1000px) rotateY(-10deg) rotateX(5deg)  translateY(0px); }
     }
-    /* Animation 2 - glow pulse */
     @keyframes glowPulse {
-      0%,100% { box-shadow: 0 20px 60px rgba(46,196,182,0.4), 0 0 0 0 rgba(46,196,182,0.0); }
-      50%      { box-shadow: 0 35px 90px rgba(46,196,182,0.7), 0 0 60px 15px rgba(46,196,182,0.2); }
+      0%,100% { box-shadow: 0 0 30px rgba(46,196,182,0.5), 0 0 60px rgba(46,196,182,0.2), inset 0 0 30px rgba(46,196,182,0.05); }
+      50%      { box-shadow: 0 0 60px rgba(46,196,182,0.9), 0 0 120px rgba(46,196,182,0.4), inset 0 0 60px rgba(46,196,182,0.1); }
     }
-    /* Animation 3 - shimmer shine sweep */
     @keyframes shineSweep {
-      0%   { left: -120%; }
-      60%,100% { left: 160%; }
+      0%       { left: -120%; opacity: 0.6; }
+      60%,100% { left: 160%;  opacity: 0; }
     }
     @keyframes ringRotate        { from { transform: rotate(0deg);   } to { transform: rotate(360deg);  } }
     @keyframes ringRotateReverse { from { transform: rotate(0deg);   } to { transform: rotate(-360deg); } }
+    @keyframes orbitDot {
+      from { transform: rotate(0deg) translateX(200px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+    }
+    @keyframes orbitDot2 {
+      from { transform: rotate(120deg) translateX(180px) rotate(-120deg); }
+      to   { transform: rotate(480deg) translateX(180px) rotate(-480deg); }
+    }
+    @keyframes orbitDot3 {
+      from { transform: rotate(240deg) translateX(160px) rotate(-240deg); }
+      to   { transform: rotate(600deg) translateX(160px) rotate(-600deg); }
+    }
+    @keyframes scanline {
+      0%   { top: -10%; opacity: 0.7; }
+      100% { top: 110%; opacity: 0; }
+    }
+    @keyframes holoFlicker {
+      0%,100% { opacity: 1; }
+      92%     { opacity: 1; }
+      93%     { opacity: 0.7; }
+      94%     { opacity: 1; }
+      97%     { opacity: 0.85; }
+      98%     { opacity: 1; }
+    }
+    @keyframes cornerPulse {
+      0%,100% { opacity: 0.6; transform: scale(1); }
+      50%     { opacity: 1;   transform: scale(1.15); }
+    }
+    @keyframes dataFloat {
+      0%   { transform: translateY(0px);   opacity: 0.8; }
+      50%  { transform: translateY(-12px); opacity: 1; }
+      100% { transform: translateY(0px);   opacity: 0.8; }
+    }
 
     /* scroll reveal base */
     .reveal { opacity:0; transform:translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -117,7 +148,7 @@
     .btn-outline { padding:13px 30px; background:transparent; color:var(--navy); border:2px solid var(--navy); border-radius:6px; font-family:'Inter',sans-serif; font-size:0.9rem; font-weight:600; cursor:pointer; text-decoration:none; transition:background 0.2s, transform 0.2s; }
     .btn-outline:hover { background:rgba(30,42,94,0.08); transform:translateY(-3px); }
 
-    /* hero image - 3D */
+    /* hero image - AR/VR 3D */
     .hero-img-wrapper {
       flex-shrink: 0;
       position: relative;
@@ -125,25 +156,73 @@
       height: 420px;
       animation: slideLeft 0.8s 0.3s ease both;
     }
-    /* Ring 1 - teal dashed */
+    /* Ring 1 - teal */
     .hero-img-wrapper::before {
       content: '';
       position: absolute;
-      inset: -18px;
-      border-radius: 28px;
-      border: 2px dashed rgba(46,196,182,0.5);
-      animation: ringRotate 10s linear infinite;
+      inset: -22px;
+      border-radius: 30px;
+      border: 1.5px solid rgba(46,196,182,0.5);
+      animation: ringRotate 9s linear infinite;
       z-index: 0;
     }
-    /* Ring 2 - gold dashed */
+    /* Ring 2 - gold */
     .hero-img-wrapper::after {
       content: '';
       position: absolute;
-      inset: -36px;
-      border-radius: 38px;
-      border: 2px dashed rgba(194,168,74,0.3);
-      animation: ringRotateReverse 16s linear infinite;
+      inset: -42px;
+      border-radius: 42px;
+      border: 1.5px solid rgba(194,168,74,0.35);
+      animation: ringRotateReverse 14s linear infinite;
       z-index: 0;
+    }
+    /* Orbit dots */
+    .orbit-dot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 10px; height: 10px;
+      margin: -5px 0 0 -5px;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .orbit-dot:nth-child(1) { background: rgba(46,196,182,0.9); box-shadow: 0 0 10px rgba(46,196,182,1); animation: orbitDot 5s linear infinite; }
+    .orbit-dot:nth-child(2) { background: rgba(194,168,74,0.9);  box-shadow: 0 0 10px rgba(194,168,74,1);  animation: orbitDot2 7s linear infinite; }
+    .orbit-dot:nth-child(3) { background: rgba(255,255,255,0.8); box-shadow: 0 0 8px rgba(255,255,255,0.9); animation: orbitDot3 9s linear infinite; }
+    /* Corner HUD brackets */
+    .hud-corner {
+      position: absolute;
+      width: 20px; height: 20px;
+      z-index: 4;
+      pointer-events: none;
+      animation: cornerPulse 2s ease-in-out infinite;
+    }
+    .hud-corner::before, .hud-corner::after { content:''; position:absolute; background: rgba(46,196,182,0.9); }
+    .hud-corner.tl { top: 6px; left: 6px; }
+    .hud-corner.tl::before { top:0; left:0; width:2px; height:14px; }
+    .hud-corner.tl::after  { top:0; left:0; width:14px; height:2px; }
+    .hud-corner.tr { top: 6px; right: 6px; }
+    .hud-corner.tr::before { top:0; right:0; width:2px; height:14px; }
+    .hud-corner.tr::after  { top:0; right:0; width:14px; height:2px; }
+    .hud-corner.bl { bottom: 6px; left: 6px; }
+    .hud-corner.bl::before { bottom:0; left:0; width:2px; height:14px; }
+    .hud-corner.bl::after  { bottom:0; left:0; width:14px; height:2px; }
+    .hud-corner.br { bottom: 6px; right: 6px; }
+    .hud-corner.br::before { bottom:0; right:0; width:2px; height:14px; }
+    .hud-corner.br::after  { bottom:0; right:0; width:14px; height:2px; }
+    /* Data tag */
+    .hud-tag {
+      position: absolute;
+      bottom: -36px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: rgba(46,196,182,0.85);
+      font-family: monospace;
+      animation: dataFloat 3s ease-in-out infinite;
+      z-index: 4;
+      white-space: nowrap;
     }
     .hero-img {
       width: 340px;
@@ -152,21 +231,32 @@
       overflow: hidden;
       position: relative;
       background: linear-gradient(160deg,#b8ede9 0%,#2ec4b6 60%,#1a9e93 100%);
-      /* 3 animations combined */
       animation: rotate3d 7s ease-in-out infinite,
-                 glowPulse 7s ease-in-out infinite;
+                 glowPulse 7s ease-in-out infinite,
+                 holoFlicker 8s ease-in-out infinite;
       transform-style: preserve-3d;
       z-index: 1;
       cursor: pointer;
     }
-    /* Shine sweep overlay - animation 3 */
+    /* Scanline sweep */
+    .hero-img::before {
+      content: '';
+      position: absolute;
+      top: -10%; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(46,196,182,0.6), transparent);
+      animation: scanline 3s linear infinite;
+      z-index: 3;
+      pointer-events: none;
+    }
+    /* Shine sweep */
     .hero-img::after {
       content: '';
       position: absolute;
       top: 0; left: -120%;
-      width: 60%; height: 100%;
-      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.28) 50%, transparent 70%);
-      animation: shineSweep 4s ease-in-out infinite;
+      width: 55%; height: 100%;
+      background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.22) 50%, transparent 70%);
+      animation: shineSweep 4.5s ease-in-out infinite;
       z-index: 2;
       pointer-events: none;
     }
@@ -178,10 +268,8 @@
       display: block;
       transition: transform 0.5s ease;
     }
-    .hero-img:hover {
-      animation-play-state: paused;
-    }
-    .hero-img:hover::after { animation-play-state: paused; }
+    .hero-img:hover { animation-play-state: paused; }
+    .hero-img:hover::before, .hero-img:hover::after { animation-play-state: paused; }
     .hero-img:hover img { transform: scale(1.06); }
 
     /* badges */
@@ -326,11 +414,19 @@
         </div>
       </div>
       <div class="hero-img-wrapper">
+        <span class="orbit-dot"></span>
+        <span class="orbit-dot"></span>
+        <span class="orbit-dot"></span>
         <div class="hero-img">
+          <span class="hud-corner tl"></span>
+          <span class="hud-corner tr"></span>
+          <span class="hud-corner bl"></span>
+          <span class="hud-corner br"></span>
           <img src="img/img.png" alt="Neha Mali"/>
         </div>
         <div class="badge b1"><span class="dot"></span> Available for Work</div>
         <div class="badge b2"><span class="dot"></span> Fast Delivery</div>
+        <div class="hud-tag">◈ NEHA.MALI · WEB.DEV · v2.0 ◈</div>
       </div>
     </div>
   </section>
