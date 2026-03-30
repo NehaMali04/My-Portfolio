@@ -357,10 +357,11 @@
       html { overflow-x:hidden; }
       body { overflow-x:hidden; width:100%; }
 
-      nav { padding:0 16px; height:60px; width:100%; }
-      nav ul { gap:12px; }
-      nav ul a { font-size:0.8rem; }
-      .nav-cta { padding:7px 12px; font-size:0.8rem !important; }
+      nav { padding:0 10px; height:60px; width:100%; }
+      nav ul { gap:6px; flex-wrap:nowrap; }
+      nav ul a { font-size:0.75rem; white-space:nowrap; }
+      .nav-cta { padding:6px 10px; font-size:0.75rem !important; white-space:nowrap; }
+      nav .logo img { height:40px; }
 
       #hero { padding:68px 16px 40px; min-height:auto; width:100%; }
       .hero-inner { flex-direction:column; text-align:center; gap:24px; width:100%; max-width:100%; }
@@ -395,10 +396,10 @@
     }
 
     @media (max-width:480px) {
-      nav .logo img { height:36px; }
-      nav ul { gap:8px; }
-      nav ul a { font-size:0.74rem; }
-      .nav-cta { padding:6px 10px !important; font-size:0.74rem !important; }
+      nav .logo img { height:32px; }
+      nav ul { gap:4px; }
+      nav ul a { font-size:0.7rem; }
+      .nav-cta { padding:5px 8px !important; font-size:0.7rem !important; }
 
       .hero-text h1 { font-size:2rem; }
       .hero-text .role { font-size:0.95rem; }
