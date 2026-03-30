@@ -305,7 +305,17 @@
       border-radius:4px; background:rgba(46,196,182,0.15);
       color:var(--teal); border:1px solid rgba(46,196,182,0.25);
     }
-    .project-btns { display:flex; gap:10px; }
+    .project-thumb img {
+      width:100%; height:100%;
+      object-fit:cover; object-position:top center;
+      display:block;
+      transform:scale(1.08);
+      transform-origin:top center;
+      transition: transform 0.4s ease;
+    }
+    .project-card.zoomed .project-thumb img { transform: scale(1.35); }
+    .project-card.zoomed { cursor: zoom-out; }
+    .project-card { cursor: zoom-in; }
     .btn-gh {
       flex:1; padding:9px 0; text-align:center; border-radius:6px;
       font-size:0.82rem; font-weight:600; text-decoration:none;
@@ -314,7 +324,7 @@
       transition:background 0.2s, transform 0.2s;
     }
     .btn-gh:hover { background:rgba(255,255,255,0.15); transform:translateY(-2px); }
-    .btn-live {
+    .project-btns { display:flex; gap:10px; }
       flex:1; padding:9px 0; text-align:center; border-radius:6px;
       font-size:0.82rem; font-weight:600; text-decoration:none;
       background:var(--teal); color:#fff;
@@ -505,7 +515,7 @@
 
       <div class="project-card reveal">
         <div class="project-thumb" style="padding:0; overflow:hidden;">
-          <img src="hotel-lifeline.png.jpg" alt="Hotel Lifeline & Lodging" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transform:scale(1.08);transform-origin:top center;"/>
+          <img src="hotel-lifeline.png.jpg" alt="Hotel Lifeline & Lodging" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transform:scale(1.08);transform-origin:top center;transition:transform 0.4s ease;"/>
         </div>
         <div class="project-body">
           <h3>Hotel Lifeline &amp; Lodging</h3>
@@ -525,7 +535,9 @@
       </div>
 
       <div class="project-card reveal">
-        <div class="project-thumb">🤖</div>
+        <div class="project-thumb" style="padding:0; overflow:hidden;">
+          <img src="Chatbot.jpg" alt="Chatbot" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transform:scale(1.08);transform-origin:top center;transition:transform 0.4s ease;"/>
+        </div>
         <div class="project-body">
           <h3>Chatbot</h3>
           <p>An AI-powered chatbot that handles user queries with natural language processing and smart responses.</p>
@@ -654,6 +666,16 @@
   </footer>
 
   <script>
+    // Project card zoom on click
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('click', function(e) {
+        if (e.target.closest('.project-btns')) return;
+        this.classList.toggle('zoomed');
+        const img = this.querySelector('.project-thumb img');
+        if (img) img.style.transform = this.classList.contains('zoomed') ? 'scale(1.45)' : 'scale(1.08)';
+      });
+    });
+
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
