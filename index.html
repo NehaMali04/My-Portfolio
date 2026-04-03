@@ -715,84 +715,79 @@
       const t = document.getElementById('projectsTrack');
       if (!wrapper || !t) return;
 
-      let isDragging = false, startX = 0, scrollLeft = 0, animOffset = 0, rafId = null;
-      const speed = 0.5; // px per frame
+      let isDragging = false, startX = 0, currentX = 0, animOffset = 0;
+      let resumeTimer = null;
 
-      // Get current translateX from animation
-      function getCurrentX() {
+      function getCurrentTranslateX() {
         const style = window.getComputedStyle(t);
         const matrix = new DOMMatrix(style.transform);
         return matrix.m41;
       }
 
-      function startAuto() {
-        t.classList.remove('paused');
-      }
-      function stopAuto() {
-        t.classList.add('paused');
+      function pauseAnim() {
+        if (t.style.animation !== 'none') {
+          animOffset = getCurrentTranslateX();
+          t.style.animation = 'none';
+          t.style.transform = `translateX(${animOffset}px)`;
+        }
+        clearTimeout(resumeTimer);
       }
 
-      // Hover pause
-      wrapper.addEventListener('mouseenter', stopAuto);
-      wrapper.addEventListener('mouseleave', () => { if (!isDragging) startAuto(); });
+      function resumeAnim() {
+        resumeTimer = setTimeout(() => {
+          const half = t.scrollWidth / 2;
+          const cur = parseFloat(t.style.transform.replace('translateX(','').replace('px)','')) || 0;
+          const pct = Math.abs(cur) / half;
+          const delay = -(pct * 35);
+          t.style.transform = '';
+          t.style.animation = `scrollProjects 35s ${delay}s linear infinite`;
+        }, 300);
+      }
 
-      // Mouse drag
-      wrapper.addEventListener('mousedown', (e) => {
+      function onDragStart(x) {
         isDragging = true;
-        stopAuto();
-        startX = e.pageX;
-        animOffset = getCurrentX();
-        t.style.transform = `translateX(${animOffset}px)`;
-        t.style.animation = 'none';
-      });
-      window.addEventListener('mousemove', (e) => {
+        startX = x;
+        pauseAnim();
+      }
+
+      function onDragMove(x) {
         if (!isDragging) return;
-        const dx = e.pageX - startX;
+        const dx = x - startX;
+        const half = -(t.scrollWidth / 2);
         let newX = animOffset + dx;
-        const half = -t.scrollWidth / 2;
-        if (newX < half) newX -= half;
-        if (newX > 0) newX += half;
+        if (newX < half) newX = half + (newX - half) % (-half);
+        if (newX > 0) newX = half + newX;
+        currentX = newX;
         t.style.transform = `translateX(${newX}px)`;
-      });
-      window.addEventListener('mouseup', () => {
+      }
+
+      function onDragEnd() {
         if (!isDragging) return;
         isDragging = false;
-        // Resume animation from current position
-        const curX = getCurrentX();
-        const half = t.scrollWidth / 2;
-        const pct = Math.abs(curX) / half * 100;
-        t.style.animation = '';
-        t.style.transform = '';
-        t.style.animationDelay = `-${pct * 35 / 100}s`;
-        t.classList.remove('paused');
-      });
+        animOffset = currentX;
+        resumeAnim();
+      }
 
-      // Touch drag
-      let touchStartX = 0, touchOffset = 0;
+      // Mouse events
+      wrapper.addEventListener('mousedown', (e) => { onDragStart(e.pageX); });
+      window.addEventListener('mousemove', (e) => { onDragMove(e.pageX); });
+      window.addEventListener('mouseup', onDragEnd);
+
+      // Touch events
       wrapper.addEventListener('touchstart', (e) => {
-        stopAuto();
-        touchStartX = e.touches[0].pageX;
-        touchOffset = getCurrentX();
-        t.style.transform = `translateX(${touchOffset}px)`;
-        t.style.animation = 'none';
+        onDragStart(e.touches[0].pageX);
       }, { passive: true });
+
       wrapper.addEventListener('touchmove', (e) => {
-        const dx = e.touches[0].pageX - touchStartX;
-        let newX = touchOffset + dx;
-        const half = -t.scrollWidth / 2;
-        if (newX < half) newX -= half;
-        if (newX > 0) newX += half;
-        t.style.transform = `translateX(${newX}px)`;
+        onDragMove(e.touches[0].pageX);
       }, { passive: true });
-      wrapper.addEventListener('touchend', () => {
-        const curX = getCurrentX();
-        const half = t.scrollWidth / 2;
-        const pct = Math.abs(curX) / half * 100;
-        t.style.animation = '';
-        t.style.transform = '';
-        t.style.animationDelay = `-${pct * 35 / 100}s`;
-        t.classList.remove('paused');
-      });
+
+      wrapper.addEventListener('touchend', onDragEnd, { passive: true });
+      wrapper.addEventListener('touchcancel', onDragEnd, { passive: true });
+
+      // Hover pause (desktop only)
+      wrapper.addEventListener('mouseenter', () => { if (!isDragging) pauseAnim(); });
+      wrapper.addEventListener('mouseleave', () => { if (!isDragging) resumeAnim(); });
     })();
 
     // Project card zoom on click
