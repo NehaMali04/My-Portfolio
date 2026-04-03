@@ -273,11 +273,32 @@
     .service-card p { font-size:0.87rem; color:#555; line-height:1.65; }
 
     /* ── PROJECTS ── */
-    #projects { padding:100px 60px; background:var(--navy-dark); }
+    #projects { padding:100px 0; background:var(--navy-dark); overflow:hidden; }
+    #projects .section-header { padding:0 60px; }
     #projects .section-header h2 { color:var(--cream); }
     #projects .section-header .label { color:var(--gold); }
     #projects .section-header p { color:#b0aaa0; font-size:0.93rem; margin-top:8px; }
-    .projects-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; max-width:1100px; margin:0 auto; align-items:stretch; }
+
+    .projects-carousel-wrapper { position:relative; overflow:hidden; margin-top:48px; }
+    .projects-carousel-wrapper::before,
+    .projects-carousel-wrapper::after {
+      content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
+    }
+    .projects-carousel-wrapper::before { left:0; background:linear-gradient(to right, var(--navy-dark), transparent); }
+    .projects-carousel-wrapper::after  { right:0; background:linear-gradient(to left, var(--navy-dark), transparent); }
+
+    .projects-track {
+      display:flex; gap:24px; padding:10px 40px;
+      width:max-content;
+      animation: scrollProjects 35s linear infinite;
+    }
+    .projects-track:hover { animation-play-state: paused; }
+    @keyframes scrollProjects {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .projects-grid { display:contents; }
     .project-card {
       background:#1a2340;
       border-radius:16px;
@@ -285,6 +306,7 @@
       border:1px solid rgba(46,196,182,0.45);
       transition:transform 0.3s, box-shadow 0.3s;
       display:flex; flex-direction:column;
+      width:300px; flex-shrink:0;
     }
     .project-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(46,196,182,0.3); }
     .project-thumb {
@@ -336,11 +358,9 @@
     .btn-live:hover { background:var(--teal); color:var(--navy); transform:translateY(-2px); box-shadow:0 6px 20px rgba(46,196,182,0.35); }
 
     @media (max-width:900px) {
-      #projects { padding:60px 16px; }
-      .projects-grid { grid-template-columns:1fr 1fr; gap:14px; }
-    }
-    @media (max-width:600px) {
-      .projects-grid { grid-template-columns:1fr; }
+      #projects { padding:60px 0; }
+      #projects .section-header { padding:0 16px; }
+      .project-card { width:260px; }
     }
 
     /* ── CONTACT ── */
@@ -508,12 +528,14 @@
 
   <!-- Projects -->
   <section id="projects">
-    <div class="section-header reveal">
+    <div class="section-header reveal" style="max-width:1100px;margin:0 auto;text-align:center;">
       <div class="label">— My Work</div>
       <h2>Projects</h2>
       <p>My recent work</p>
     </div>
-    <div class="projects-grid">
+    <div class="projects-carousel-wrapper">
+      <div class="projects-track" id="projectsTrack">
+        <div class="projects-grid" id="projectsOriginal">
 
       <div class="project-card reveal">
         <div class="project-thumb" style="padding:0; overflow:hidden;">
@@ -635,7 +657,9 @@
         </div>
       </div>
 
-    </div>
+      </div><!-- end projects-grid original -->
+      </div><!-- end projects-track -->
+    </div><!-- end carousel-wrapper -->
   </section>
 
   <!-- Contact -->
@@ -675,6 +699,15 @@
   </footer>
 
   <script>
+    // Project carousel infinite scroll - duplicate cards
+    const track = document.getElementById('projectsTrack');
+    const original = document.getElementById('projectsOriginal');
+    if (track && original) {
+      const clone = original.cloneNode(true);
+      clone.id = 'projectsClone';
+      track.appendChild(clone);
+    }
+
     // Project card zoom on click
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', function(e) {
