@@ -446,10 +446,31 @@
       .instagram-btn { font-size:0.82rem; padding:11px 18px; width:100%; justify-content:center; }
     }
     /* ── SECTION SWITCHING ── */
-    section { display:none; }
-    section.active-section { display:block; }
+    section { display:none; min-height:100vh; flex-direction:column; }
+    section.active-section { display:flex; }
     #hero { display:none; }
     #hero.active-section { display:flex; }
+
+    /* Each section fills screen with footer at bottom */
+    #about, #services, #contact, #projects {
+      justify-content:space-between;
+    }
+    #about .about-inner, #services > *, #contact .contact-inner {
+      flex:1;
+    }
+
+    /* Shared footer inside sections */
+    .section-footer {
+      background:var(--navy);
+      color:#aaa;
+      text-align:center;
+      padding:22px;
+      font-size:0.83rem;
+      margin-top:auto;
+      flex-shrink:0;
+    }
+    .section-footer span { color:var(--teal); }
+    footer { display:none; }
 
   </style>
 </head>
@@ -496,6 +517,7 @@
         <div class="hud-tag">◈ NEHA.MALI · WEB.DEV · v2.0 ◈</div>
       </div>
     </div>
+    <footer class="section-footer" style="background:rgba(30,42,94,0.5);">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
 
   <!-- About -->
@@ -515,6 +537,7 @@
         <div class="stat-card"><div class="num" data-target="100" data-suffix="%">0</div><div class="lbl">Satisfaction</div></div>
       </div>
     </div>
+    <footer class="section-footer">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
 
   <!-- Services -->
@@ -532,6 +555,7 @@
       <div class="service-card reveal"><div class="s-icon">⚡</div><h3>Speed Optimization</h3><p>Make your website lightning fast for better UX and SEO scores.</p></div>
       <div class="service-card reveal"><div class="s-icon">🛠️</div><h3>Website Maintenance</h3><p>Ongoing support to keep your website secure, updated, and running smoothly.</p></div>
     </div>
+    <footer class="section-footer">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
 
   <!-- Projects -->
@@ -668,6 +692,7 @@
       </div><!-- end projects-grid original -->
       </div><!-- end projects-track -->
     </div><!-- end carousel-wrapper -->
+    <footer class="section-footer">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
 
   <!-- Contact -->
@@ -700,6 +725,7 @@
         Contact on Instagram &nbsp;@web_withneha
       </a>
     </div>
+    <footer class="section-footer">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
 
   <footer>
