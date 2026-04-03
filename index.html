@@ -291,8 +291,8 @@
     .projects-track {
       display:flex; gap:24px; padding:10px 40px;
       width:max-content;
-      animation: scrollProjects 35s linear infinite;
       user-select:none;
+      will-change: transform;
     }
     .projects-track.paused { animation-play-state: paused; }
     @keyframes scrollProjects {
@@ -701,7 +701,7 @@
   </footer>
 
   <script>
-    // Project carousel - auto scroll + manual drag/touch
+    // Project carousel - pure JS scroll (no CSS animation)
     const track = document.getElementById('projectsTrack');
     const original = document.getElementById('projectsOriginal');
     if (track && original) {
@@ -715,79 +715,89 @@
       const t = document.getElementById('projectsTrack');
       if (!wrapper || !t) return;
 
-      let isDragging = false, startX = 0, currentX = 0, animOffset = 0;
+      let pos = 0;
+      let isDragging = false;
+      let dragStartX = 0;
+      let dragStartPos = 0;
+      let autoPlay = true;
       let resumeTimer = null;
+      const speed = 0.6;
 
-      function getCurrentTranslateX() {
-        const style = window.getComputedStyle(t);
-        const matrix = new DOMMatrix(style.transform);
-        return matrix.m41;
-      }
+      function getHalf() { return t.scrollWidth / 2; }
 
-      function pauseAnim() {
-        if (t.style.animation !== 'none') {
-          animOffset = getCurrentTranslateX();
-          t.style.animation = 'none';
-          t.style.transform = `translateX(${animOffset}px)`;
+      function animate() {
+        if (autoPlay && !isDragging) {
+          pos -= speed;
+          const half = getHalf();
+          if (Math.abs(pos) >= half) pos = 0;
         }
+        t.style.transform = `translateX(${pos}px)`;
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+
+      function pauseAuto() {
+        autoPlay = false;
         clearTimeout(resumeTimer);
       }
-
-      function resumeAnim() {
-        resumeTimer = setTimeout(() => {
-          const half = t.scrollWidth / 2;
-          const cur = parseFloat(t.style.transform.replace('translateX(','').replace('px)','')) || 0;
-          const pct = Math.abs(cur) / half;
-          const delay = -(pct * 35);
-          t.style.transform = '';
-          t.style.animation = `scrollProjects 35s ${delay}s linear infinite`;
-        }, 300);
+      function scheduleResume() {
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => { autoPlay = true; }, 1500);
       }
 
-      function onDragStart(x) {
+      // Mouse
+      wrapper.addEventListener('mousedown', (e) => {
         isDragging = true;
-        startX = x;
-        pauseAnim();
-      }
-
-      function onDragMove(x) {
+        autoPlay = false;
+        clearTimeout(resumeTimer);
+        dragStartX = e.clientX;
+        dragStartPos = pos;
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
-        const dx = x - startX;
-        const half = -(t.scrollWidth / 2);
-        let newX = animOffset + dx;
-        if (newX < half) newX = half + (newX - half) % (-half);
-        if (newX > 0) newX = half + newX;
-        currentX = newX;
-        t.style.transform = `translateX(${newX}px)`;
-      }
-
-      function onDragEnd() {
+        const dx = e.clientX - dragStartX;
+        let newPos = dragStartPos + dx;
+        const half = getHalf();
+        if (newPos > 0) newPos = -half + newPos;
+        if (newPos < -half) newPos = newPos + half;
+        pos = newPos;
+      });
+      window.addEventListener('mouseup', () => {
         if (!isDragging) return;
         isDragging = false;
-        animOffset = currentX;
-        resumeAnim();
-      }
+        scheduleResume();
+      });
 
-      // Mouse events
-      wrapper.addEventListener('mousedown', (e) => { onDragStart(e.pageX); });
-      window.addEventListener('mousemove', (e) => { onDragMove(e.pageX); });
-      window.addEventListener('mouseup', onDragEnd);
-
-      // Touch events
+      // Touch
       wrapper.addEventListener('touchstart', (e) => {
-        onDragStart(e.touches[0].pageX);
+        isDragging = true;
+        autoPlay = false;
+        clearTimeout(resumeTimer);
+        dragStartX = e.touches[0].clientX;
+        dragStartPos = pos;
       }, { passive: true });
-
       wrapper.addEventListener('touchmove', (e) => {
-        onDragMove(e.touches[0].pageX);
+        if (!isDragging) return;
+        const dx = e.touches[0].clientX - dragStartX;
+        let newPos = dragStartPos + dx;
+        const half = getHalf();
+        if (newPos > 0) newPos = -half + newPos;
+        if (newPos < -half) newPos = newPos + half;
+        pos = newPos;
+      }, { passive: true });
+      wrapper.addEventListener('touchend', () => {
+        isDragging = false;
+        scheduleResume();
+      }, { passive: true });
+      wrapper.addEventListener('touchcancel', () => {
+        isDragging = false;
+        scheduleResume();
       }, { passive: true });
 
-      wrapper.addEventListener('touchend', onDragEnd, { passive: true });
-      wrapper.addEventListener('touchcancel', onDragEnd, { passive: true });
-
-      // Hover pause (desktop only)
-      wrapper.addEventListener('mouseenter', () => { if (!isDragging) pauseAnim(); });
-      wrapper.addEventListener('mouseleave', () => { if (!isDragging) resumeAnim(); });
+      // Hover pause desktop
+      wrapper.addEventListener('mouseenter', pauseAuto);
+      wrapper.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(); });
     })();
 
     // Project card zoom on click
