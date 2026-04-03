@@ -279,7 +279,8 @@
     #projects .section-header .label { color:var(--gold); }
     #projects .section-header p { color:#b0aaa0; font-size:0.93rem; margin-top:8px; }
 
-    .projects-carousel-wrapper { position:relative; overflow:hidden; margin-top:48px; }
+    .projects-carousel-wrapper { position:relative; overflow:hidden; margin-top:48px; cursor:grab; }
+    .projects-carousel-wrapper:active { cursor:grabbing; }
     .projects-carousel-wrapper::before,
     .projects-carousel-wrapper::after {
       content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
@@ -291,7 +292,9 @@
       display:flex; gap:24px; padding:10px 40px;
       width:max-content;
       animation: scrollProjects 35s linear infinite;
+      user-select:none;
     }
+    .projects-track.paused { animation-play-state: paused; }
     @keyframes scrollProjects {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -698,7 +701,7 @@
   </footer>
 
   <script>
-    // Project carousel infinite scroll - duplicate cards
+    // Project carousel - auto scroll + manual drag/touch
     const track = document.getElementById('projectsTrack');
     const original = document.getElementById('projectsOriginal');
     if (track && original) {
@@ -706,6 +709,91 @@
       clone.id = 'projectsClone';
       track.appendChild(clone);
     }
+
+    (function() {
+      const wrapper = document.querySelector('.projects-carousel-wrapper');
+      const t = document.getElementById('projectsTrack');
+      if (!wrapper || !t) return;
+
+      let isDragging = false, startX = 0, scrollLeft = 0, animOffset = 0, rafId = null;
+      const speed = 0.5; // px per frame
+
+      // Get current translateX from animation
+      function getCurrentX() {
+        const style = window.getComputedStyle(t);
+        const matrix = new DOMMatrix(style.transform);
+        return matrix.m41;
+      }
+
+      function startAuto() {
+        t.classList.remove('paused');
+      }
+      function stopAuto() {
+        t.classList.add('paused');
+      }
+
+      // Hover pause
+      wrapper.addEventListener('mouseenter', stopAuto);
+      wrapper.addEventListener('mouseleave', () => { if (!isDragging) startAuto(); });
+
+      // Mouse drag
+      wrapper.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        stopAuto();
+        startX = e.pageX;
+        animOffset = getCurrentX();
+        t.style.transform = `translateX(${animOffset}px)`;
+        t.style.animation = 'none';
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.pageX - startX;
+        let newX = animOffset + dx;
+        const half = -t.scrollWidth / 2;
+        if (newX < half) newX -= half;
+        if (newX > 0) newX += half;
+        t.style.transform = `translateX(${newX}px)`;
+      });
+      window.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        // Resume animation from current position
+        const curX = getCurrentX();
+        const half = t.scrollWidth / 2;
+        const pct = Math.abs(curX) / half * 100;
+        t.style.animation = '';
+        t.style.transform = '';
+        t.style.animationDelay = `-${pct * 35 / 100}s`;
+        t.classList.remove('paused');
+      });
+
+      // Touch drag
+      let touchStartX = 0, touchOffset = 0;
+      wrapper.addEventListener('touchstart', (e) => {
+        stopAuto();
+        touchStartX = e.touches[0].pageX;
+        touchOffset = getCurrentX();
+        t.style.transform = `translateX(${touchOffset}px)`;
+        t.style.animation = 'none';
+      }, { passive: true });
+      wrapper.addEventListener('touchmove', (e) => {
+        const dx = e.touches[0].pageX - touchStartX;
+        let newX = touchOffset + dx;
+        const half = -t.scrollWidth / 2;
+        if (newX < half) newX -= half;
+        if (newX > 0) newX += half;
+        t.style.transform = `translateX(${newX}px)`;
+      }, { passive: true });
+      wrapper.addEventListener('touchend', () => {
+        const curX = getCurrentX();
+        const half = t.scrollWidth / 2;
+        const pct = Math.abs(curX) / half * 100;
+        t.style.animation = '';
+        t.style.transform = '';
+        t.style.animationDelay = `-${pct * 35 / 100}s`;
+        t.classList.remove('paused');
+      });
+    })();
 
     // Project card zoom on click
     document.querySelectorAll('.project-card').forEach(card => {
