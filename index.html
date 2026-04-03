@@ -445,6 +445,12 @@
       .stat-card .num { font-size:1.5rem; }
       .instagram-btn { font-size:0.82rem; padding:11px 18px; width:100%; justify-content:center; }
     }
+    /* ── SECTION SWITCHING ── */
+    section { display:none; }
+    section.active-section { display:block; }
+    #hero { display:none; }
+    #hero.active-section { display:flex; }
+
   </style>
 </head>
 <body>
@@ -453,11 +459,11 @@
   <nav>
     <div class="logo"><img src="logo/logo.jpg" alt="Neha Mali Logo"/></div>
     <ul>
-      <li><a href="#hero">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
+      <li><a href="#hero" data-section="hero">Home</a></li>
+      <li><a href="#about" data-section="about">About</a></li>
+      <li><a href="#services" data-section="services">Services</a></li>
+      <li><a href="#projects" data-section="projects">Projects</a></li>
+      <li><a href="#contact" data-section="contact" class="nav-cta">Let's Talk</a></li>
     </ul>
   </nav>
 
@@ -810,6 +816,38 @@
       });
     });
 
+    // Section switching
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.classList.remove('active-section'));
+      const target = document.getElementById(id);
+      if (target) {
+        target.classList.add('active-section');
+        window.scrollTo(0, 0);
+      }
+      // Update nav active state
+      document.querySelectorAll('nav ul a').forEach(a => {
+        a.style.color = a.dataset.section === id ? 'var(--navy)' : '';
+      });
+    }
+
+    document.querySelectorAll('nav ul a[data-section]').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        showSection(a.dataset.section);
+      });
+    });
+
+    // Also handle hero buttons (Learn More, Contact Me)
+    document.querySelectorAll('a[href="#services"]').forEach(a => {
+      a.addEventListener('click', (e) => { e.preventDefault(); showSection('services'); });
+    });
+    document.querySelectorAll('a[href="#contact"]').forEach(a => {
+      a.addEventListener('click', (e) => { e.preventDefault(); showSection('contact'); });
+    });
+
+    // Show hero on load
+    showSection('hero');
+
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
@@ -848,14 +886,6 @@
     }, { threshold: 0.4 });
 
     document.querySelectorAll('.about-stats').forEach(el => countUpObserver.observe(el));
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
-      document.querySelectorAll('nav ul a').forEach(a => {
-        a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--navy)' : '';
-      });
-    });
   </script>
 </body>
 </html>
