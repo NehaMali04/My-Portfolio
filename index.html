@@ -295,7 +295,7 @@
     .service-card p { font-size:0.87rem; color:#555; line-height:1.65; }
 
     /* ── PROJECTS ── */
-    #projects { padding:100px 60px 100px; background:var(--navy-dark); }
+    #projects { padding:100px 60px 100px; background:var(--navy-dark); box-sizing:border-box; width:100%; }
     #projects .section-header h2 { color:var(--cream); }
     #projects .section-header .label { color:var(--gold); }
     #projects .section-header p { color:#b0aaa0; font-size:0.93rem; margin-top:8px; }
@@ -303,7 +303,7 @@
     .projects-carousel-wrapper { margin-top:48px; }
     .projects-track { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; max-width:1100px; margin:0 auto; padding:0; width:auto; will-change:unset; }
     #projectsOriginal { display:contents; }
-    .projects-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; max-width:1100px; margin:48px auto 0; }
+    .projects-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; max-width:1100px; margin:48px auto 0; width:100%; }
     .project-card {
       background:#1a2340;
       border-radius:16px;
@@ -363,9 +363,10 @@
     .btn-live:hover { background:var(--teal); color:var(--navy); transform:translateY(-2px); box-shadow:0 6px 20px rgba(46,196,182,0.35); }
 
     @media (max-width:900px) {
-      #projects { padding:60px 0; }
-      #projects .section-header { padding:0 16px; }
-      .project-card { width:260px; }
+      #projects { padding:60px 16px; }
+      #projects .section-header { padding:0; }
+      .project-card { width:auto; }
+      .projects-grid { grid-template-columns:1fr; gap:16px; }
     }
 
     /* ── CONTACT ── */
