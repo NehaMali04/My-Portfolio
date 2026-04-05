@@ -258,25 +258,14 @@
     .stat-card .lbl { font-size:0.78rem; color:var(--gray); margin-top:4px; }
 
     /* ── SERVICES CAROUSEL ── */
-    .services-carousel-wrapper {
-      position:relative; overflow:hidden; margin-top:40px; cursor:grab;
-    }
-    .services-carousel-wrapper:active { cursor:grabbing; }
-    .services-carousel-wrapper::before,
-    .services-carousel-wrapper::after {
-      content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
-    }
-    .services-carousel-wrapper::before { left:0; background:linear-gradient(to right, var(--navy), transparent); }
-    .services-carousel-wrapper::after  { right:0; background:linear-gradient(to left, var(--navy), transparent); }
-    .services-track {
-      display:flex; gap:24px; padding:10px 40px;
-      width:max-content; user-select:none; will-change:transform;
-    }
+    .services-carousel-wrapper { margin-top:40px; }
+    .services-track { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; max-width:1100px; margin:0 auto; padding:0 60px; width:auto; }
+    #servicesOriginal { display:contents; }
     .service-card {
-      background:var(--cream); border-radius:16px; padding:32px 28px;
+      background:var(--cream); border-radius:16px; padding:36px 30px;
       border:1px solid rgba(194,184,144,0.3);
       transition:transform 0.3s, box-shadow 0.3s; cursor:default;
-      width:260px; flex-shrink:0;
+      width:auto; flex-shrink:unset;
     }
 
     /* ── SERVICES ── */
@@ -295,32 +284,15 @@
     .service-card p { font-size:0.87rem; color:#555; line-height:1.65; }
 
     /* ── PROJECTS ── */
-    #projects { padding:100px 0; background:var(--navy-dark); overflow:hidden; }
-    #projects .section-header { padding:0 60px; }
+    #projects { padding:100px 60px; background:var(--navy-dark); overflow:hidden; }
+    #projects .section-header { padding:0; }
     #projects .section-header h2 { color:var(--cream); }
     #projects .section-header .label { color:var(--gold); }
     #projects .section-header p { color:#b0aaa0; font-size:0.93rem; margin-top:8px; }
 
-    .projects-carousel-wrapper { position:relative; overflow:hidden; margin-top:48px; cursor:grab; }
-    .projects-carousel-wrapper:active { cursor:grabbing; }
-    .projects-carousel-wrapper::before,
-    .projects-carousel-wrapper::after {
-      content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
-    }
-    .projects-carousel-wrapper::before { left:0; background:linear-gradient(to right, var(--navy-dark), transparent); }
-    .projects-carousel-wrapper::after  { right:0; background:linear-gradient(to left, var(--navy-dark), transparent); }
-
-    .projects-track {
-      display:flex; gap:24px; padding:10px 40px;
-      width:max-content;
-      user-select:none;
-      will-change: transform;
-    }
-    .projects-track.paused { animation-play-state: paused; }
-    @keyframes scrollProjects {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+    .projects-carousel-wrapper { margin-top:48px; }
+    .projects-track { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:24px; max-width:1100px; margin:0 auto; padding:0; width:auto; will-change:unset; }
+    #projectsOriginal { display:contents; }
 
     .projects-grid { display:contents; }
     .project-card {
@@ -330,7 +302,7 @@
       border:1px solid rgba(46,196,182,0.45);
       transition:transform 0.3s, box-shadow 0.3s;
       display:flex; flex-direction:column;
-      width:300px; flex-shrink:0;
+      width:auto; flex-shrink:unset;
     }
     .project-card:hover { transform:translateY(-8px); box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(46,196,182,0.3); }
     .project-thumb {
@@ -468,31 +440,10 @@
       .instagram-btn { font-size:0.82rem; padding:11px 18px; width:100%; justify-content:center; }
     }
     /* ── SECTION SWITCHING ── */
-    section { display:none; min-height:100vh; flex-direction:column; }
-    section.active-section { display:flex; }
-    #hero { display:none; }
-    #hero.active-section { display:flex; }
-
-    /* Each section fills screen with footer at bottom */
-    #about, #services, #contact, #projects {
-      justify-content:space-between;
-    }
-    #about .about-inner, #services > *, #contact .contact-inner {
-      flex:1;
-    }
-
-    /* Shared footer inside sections */
-    .section-footer {
-      background:rgba(212,207,184,0.97);
-      color:var(--gray);
-      text-align:center;
-      padding:22px;
-      font-size:0.83rem;
-      margin-top:auto;
-      flex-shrink:0;
-    }
-    .section-footer span { color:var(--teal); font-weight:600; }
-    footer { display:none; }
+    section { display:block; }
+    #hero { display:flex; }
+    .section-footer { display:none; }
+    footer { display:block; }
 
   </style>
 </head>
@@ -502,11 +453,11 @@
   <nav>
     <div class="logo"><img src="logo/logo.jpg" alt="Neha Mali Logo"/></div>
     <ul>
-      <li><a href="#hero" data-section="hero">Home</a></li>
-      <li><a href="#about" data-section="about">About</a></li>
-      <li><a href="#services" data-section="services">Services</a></li>
-      <li><a href="#projects" data-section="projects">Projects</a></li>
-      <li><a href="#contact" data-section="contact" class="nav-cta">Let's Talk</a></li>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact" class="nav-cta">Let's Talk</a></li>
     </ul>
   </nav>
 
@@ -778,105 +729,6 @@
   </footer>
 
   <script>
-    // Project carousel - pure JS scroll (no CSS animation)
-    const track = document.getElementById('projectsTrack');
-    const original = document.getElementById('projectsOriginal');
-    if (track && original) {
-      const clone = original.cloneNode(true);
-      clone.id = 'projectsClone';
-      track.appendChild(clone);
-    }
-
-    (function() {
-      const wrapper = document.querySelector('.projects-carousel-wrapper');
-      const t = document.getElementById('projectsTrack');
-      if (!wrapper || !t) return;
-
-      let pos = 0;
-      let isDragging = false;
-      let dragStartX = 0;
-      let dragStartPos = 0;
-      let autoPlay = true;
-      let resumeTimer = null;
-      const speed = 0.6;
-
-      function getHalf() { return t.scrollWidth / 2; }
-
-      function animate() {
-        if (autoPlay && !isDragging) {
-          pos -= speed;
-          const half = getHalf();
-          if (Math.abs(pos) >= half) pos = 0;
-        }
-        t.style.transform = `translateX(${pos}px)`;
-        requestAnimationFrame(animate);
-      }
-      requestAnimationFrame(animate);
-
-      function pauseAuto() {
-        autoPlay = false;
-        clearTimeout(resumeTimer);
-      }
-      function scheduleResume() {
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(() => { autoPlay = true; }, 1500);
-      }
-
-      // Mouse
-      wrapper.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        autoPlay = false;
-        clearTimeout(resumeTimer);
-        dragStartX = e.clientX;
-        dragStartPos = pos;
-        e.preventDefault();
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const dx = e.clientX - dragStartX;
-        let newPos = dragStartPos + dx;
-        const half = getHalf();
-        if (newPos > 0) newPos = -half + newPos;
-        if (newPos < -half) newPos = newPos + half;
-        pos = newPos;
-      });
-      window.addEventListener('mouseup', () => {
-        if (!isDragging) return;
-        isDragging = false;
-        scheduleResume();
-      });
-
-      // Touch
-      wrapper.addEventListener('touchstart', (e) => {
-        isDragging = true;
-        autoPlay = false;
-        clearTimeout(resumeTimer);
-        dragStartX = e.touches[0].clientX;
-        dragStartPos = pos;
-      }, { passive: true });
-      wrapper.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const dx = e.touches[0].clientX - dragStartX;
-        let newPos = dragStartPos + dx;
-        const half = getHalf();
-        if (newPos > 0) newPos = -half + newPos;
-        if (newPos < -half) newPos = newPos + half;
-        pos = newPos;
-      }, { passive: true });
-      wrapper.addEventListener('touchend', () => {
-        isDragging = false;
-        scheduleResume();
-      }, { passive: true });
-      wrapper.addEventListener('touchcancel', () => {
-        isDragging = false;
-        scheduleResume();
-      }, { passive: true });
-
-      // Hover pause desktop
-      wrapper.addEventListener('mouseenter', pauseAuto);
-      wrapper.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(); });
-    })();
-
     // Project card zoom on click
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', function(e) {
@@ -886,105 +738,6 @@
         if (img) img.style.transform = this.classList.contains('zoomed') ? 'scale(1.45)' : 'scale(1.08)';
       });
     });
-
-    // Section switching
-    function showSection(id) {
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active-section'));
-      const target = document.getElementById(id);
-      if (target) {
-        target.classList.add('active-section');
-        window.scrollTo(0, 0);
-      }
-      // Update nav active state
-      document.querySelectorAll('nav ul a').forEach(a => {
-        a.style.color = a.dataset.section === id ? 'var(--navy)' : '';
-      });
-    }
-
-    document.querySelectorAll('nav ul a[data-section]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        e.preventDefault();
-        showSection(a.dataset.section);
-      });
-    });
-
-    // Also handle hero buttons (Learn More, Contact Me)
-    document.querySelectorAll('a[href="#services"]').forEach(a => {
-      a.addEventListener('click', (e) => { e.preventDefault(); showSection('services'); });
-    });
-    document.querySelectorAll('a[href="#contact"]').forEach(a => {
-      a.addEventListener('click', (e) => { e.preventDefault(); showSection('contact'); });
-    });
-
-    // Show hero on load
-    showSection('hero');
-
-    // Services carousel - same as projects
-    (function() {
-      const wrapper = document.querySelector('.services-carousel-wrapper');
-      const t = document.getElementById('servicesTrack');
-      const orig = document.getElementById('servicesOriginal');
-      if (!wrapper || !t || !orig) return;
-
-      // Duplicate for infinite loop
-      const clone = orig.cloneNode(true);
-      clone.id = 'servicesClone';
-      t.appendChild(clone);
-
-      let pos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0;
-      let autoPlay = true, resumeTimer = null;
-      const speed = 0.5;
-
-      function getHalf() { return t.scrollWidth / 2; }
-
-      function animate() {
-        if (autoPlay && !isDragging) {
-          pos -= speed;
-          if (Math.abs(pos) >= getHalf()) pos = 0;
-        }
-        t.style.transform = `translateX(${pos}px)`;
-        requestAnimationFrame(animate);
-      }
-      requestAnimationFrame(animate);
-
-      function pauseAuto() { autoPlay = false; clearTimeout(resumeTimer); }
-      function scheduleResume() {
-        clearTimeout(resumeTimer);
-        resumeTimer = setTimeout(() => { autoPlay = true; }, 1500);
-      }
-
-      wrapper.addEventListener('mousedown', (e) => {
-        isDragging = true; autoPlay = false; clearTimeout(resumeTimer);
-        dragStartX = e.clientX; dragStartPos = pos; e.preventDefault();
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        let newPos = dragStartPos + (e.clientX - dragStartX);
-        const half = getHalf();
-        if (newPos > 0) newPos = -half + newPos;
-        if (newPos < -half) newPos = newPos + half;
-        pos = newPos;
-      });
-      window.addEventListener('mouseup', () => { if (!isDragging) return; isDragging = false; scheduleResume(); });
-
-      wrapper.addEventListener('touchstart', (e) => {
-        isDragging = true; autoPlay = false; clearTimeout(resumeTimer);
-        dragStartX = e.touches[0].clientX; dragStartPos = pos;
-      }, { passive: true });
-      wrapper.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        let newPos = dragStartPos + (e.touches[0].clientX - dragStartX);
-        const half = getHalf();
-        if (newPos > 0) newPos = -half + newPos;
-        if (newPos < -half) newPos = newPos + half;
-        pos = newPos;
-      }, { passive: true });
-      wrapper.addEventListener('touchend', () => { isDragging = false; scheduleResume(); }, { passive: true });
-      wrapper.addEventListener('touchcancel', () => { isDragging = false; scheduleResume(); }, { passive: true });
-
-      wrapper.addEventListener('mouseenter', pauseAuto);
-      wrapper.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(); });
-    })();
 
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
@@ -1024,6 +777,15 @@
     }, { threshold: 0.4 });
 
     document.querySelectorAll('.about-stats').forEach(el => countUpObserver.observe(el));
+
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = s.id; });
+      document.querySelectorAll('nav ul a').forEach(a => {
+        a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--teal)' : '';
+      });
+    });
   </script>
 </body>
 </html>
