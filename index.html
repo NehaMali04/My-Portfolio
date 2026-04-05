@@ -257,6 +257,28 @@
     .stat-card .num { font-size:2rem; font-weight:700; color:var(--navy); }
     .stat-card .lbl { font-size:0.78rem; color:var(--gray); margin-top:4px; }
 
+    /* ── SERVICES CAROUSEL ── */
+    .services-carousel-wrapper {
+      position:relative; overflow:hidden; margin-top:40px; cursor:grab;
+    }
+    .services-carousel-wrapper:active { cursor:grabbing; }
+    .services-carousel-wrapper::before,
+    .services-carousel-wrapper::after {
+      content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
+    }
+    .services-carousel-wrapper::before { left:0; background:linear-gradient(to right, var(--navy), transparent); }
+    .services-carousel-wrapper::after  { right:0; background:linear-gradient(to left, var(--navy), transparent); }
+    .services-track {
+      display:flex; gap:24px; padding:10px 40px;
+      width:max-content; user-select:none; will-change:transform;
+    }
+    .service-card {
+      background:var(--cream); border-radius:16px; padding:32px 28px;
+      border:1px solid rgba(194,184,144,0.3);
+      transition:transform 0.3s, box-shadow 0.3s; cursor:default;
+      width:260px; flex-shrink:0;
+    }
+
     /* ── SERVICES ── */
     #services { padding:100px 60px; background:var(--navy); }
     .section-header { text-align:center; margin-bottom:56px; }
@@ -546,14 +568,18 @@
       <div class="label">— What I Do</div>
       <h2>My Services</h2>
     </div>
-    <div class="services-grid">
-      <div class="service-card reveal"><div class="s-icon">🏢</div><h3>Business Websites</h3><p>Professional websites tailored to showcase your brand and attract customers.</p></div>
-      <div class="service-card reveal"><div class="s-icon">🛒</div><h3>E-Commerce Websites</h3><p>Full-featured online stores with smooth, conversion-focused shopping experiences.</p></div>
-      <div class="service-card reveal"><div class="s-icon">🎨</div><h3>Landing Page Design</h3><p>High-converting landing pages designed to turn visitors into leads.</p></div>
-      <div class="service-card reveal"><div class="s-icon">🔄</div><h3>Website Redesign</h3><p>Give your old website a fresh, modern look with improved performance.</p></div>
-      <div class="service-card reveal"><div class="s-icon">🔍</div><h3>SEO Optimization</h3><p>Boost your search rankings and drive organic traffic to your site.</p></div>
-      <div class="service-card reveal"><div class="s-icon">⚡</div><h3>Speed Optimization</h3><p>Make your website lightning fast for better UX and SEO scores.</p></div>
-      <div class="service-card reveal"><div class="s-icon">🛠️</div><h3>Website Maintenance</h3><p>Ongoing support to keep your website secure, updated, and running smoothly.</p></div>
+    <div class="services-carousel-wrapper">
+      <div class="services-track" id="servicesTrack">
+        <div id="servicesOriginal" style="display:flex;gap:24px;">
+          <div class="service-card"><div class="s-icon">🏢</div><h3>Business Websites</h3><p>Professional websites tailored to showcase your brand and attract customers.</p></div>
+          <div class="service-card"><div class="s-icon">�</div><h3>E-Commerce Websites</h3><p>Full-featured online stores with smooth, conversion-focused shopping experiences.</p></div>
+          <div class="service-card"><div class="s-icon">🎨</div><h3>Landing Page Design</h3><p>High-converting landing pages designed to turn visitors into leads.</p></div>
+          <div class="service-card"><div class="s-icon">🔄</div><h3>Website Redesign</h3><p>Give your old website a fresh, modern look with improved performance.</p></div>
+          <div class="service-card"><div class="s-icon">�</div><h3>SEO Optimization</h3><p>Boost your search rankings and drive organic traffic to your site.</p></div>
+          <div class="service-card"><div class="s-icon">⚡</div><h3>Speed Optimization</h3><p>Make your website lightning fast for better UX and SEO scores.</p></div>
+          <div class="service-card"><div class="s-icon">🛠️</div><h3>Website Maintenance</h3><p>Ongoing support to keep your website secure, updated, and running smoothly.</p></div>
+        </div>
+      </div>
     </div>
     <footer class="section-footer">© 2026 <span>Neha Mali</span> · Web Developer &nbsp;·&nbsp; Affordable · Fast Delivery · Professional Work</footer>
   </section>
@@ -892,6 +918,73 @@
 
     // Show hero on load
     showSection('hero');
+
+    // Services carousel - same as projects
+    (function() {
+      const wrapper = document.querySelector('.services-carousel-wrapper');
+      const t = document.getElementById('servicesTrack');
+      const orig = document.getElementById('servicesOriginal');
+      if (!wrapper || !t || !orig) return;
+
+      // Duplicate for infinite loop
+      const clone = orig.cloneNode(true);
+      clone.id = 'servicesClone';
+      t.appendChild(clone);
+
+      let pos = 0, isDragging = false, dragStartX = 0, dragStartPos = 0;
+      let autoPlay = true, resumeTimer = null;
+      const speed = 0.5;
+
+      function getHalf() { return t.scrollWidth / 2; }
+
+      function animate() {
+        if (autoPlay && !isDragging) {
+          pos -= speed;
+          if (Math.abs(pos) >= getHalf()) pos = 0;
+        }
+        t.style.transform = `translateX(${pos}px)`;
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
+
+      function pauseAuto() { autoPlay = false; clearTimeout(resumeTimer); }
+      function scheduleResume() {
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => { autoPlay = true; }, 1500);
+      }
+
+      wrapper.addEventListener('mousedown', (e) => {
+        isDragging = true; autoPlay = false; clearTimeout(resumeTimer);
+        dragStartX = e.clientX; dragStartPos = pos; e.preventDefault();
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let newPos = dragStartPos + (e.clientX - dragStartX);
+        const half = getHalf();
+        if (newPos > 0) newPos = -half + newPos;
+        if (newPos < -half) newPos = newPos + half;
+        pos = newPos;
+      });
+      window.addEventListener('mouseup', () => { if (!isDragging) return; isDragging = false; scheduleResume(); });
+
+      wrapper.addEventListener('touchstart', (e) => {
+        isDragging = true; autoPlay = false; clearTimeout(resumeTimer);
+        dragStartX = e.touches[0].clientX; dragStartPos = pos;
+      }, { passive: true });
+      wrapper.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        let newPos = dragStartPos + (e.touches[0].clientX - dragStartX);
+        const half = getHalf();
+        if (newPos > 0) newPos = -half + newPos;
+        if (newPos < -half) newPos = newPos + half;
+        pos = newPos;
+      }, { passive: true });
+      wrapper.addEventListener('touchend', () => { isDragging = false; scheduleResume(); }, { passive: true });
+      wrapper.addEventListener('touchcancel', () => { isDragging = false; scheduleResume(); }, { passive: true });
+
+      wrapper.addEventListener('mouseenter', pauseAuto);
+      wrapper.addEventListener('mouseleave', () => { if (!isDragging) scheduleResume(); });
+    })();
 
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
